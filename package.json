@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node ./src/index.ts",
-    "build": "eslint && tsc && jest",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "jest",
     "watch": "jest --watch --collectCoverage=false"
   },
@@ -15,6 +15,7 @@
     "aws-amplify": "^5.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
