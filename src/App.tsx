@@ -17,11 +17,17 @@ import {
   deleteNote as deleteNoteMutation,
 } from "./graphql/mutations";
 
-function App({
-  signOut,
-}: {
-  signOut: React.MouseEventHandler<HTMLButtonElement>;
-}) {
+interface AppProps {
+  signOut?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+interface Note {
+  id: string;
+  name: string;
+  description: string;
+}
+
+const App = ({ signOut }: AppProps) => {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
@@ -92,28 +98,27 @@ function App({
         </View>
         <Heading level={2}>Current Notes</Heading>
         <View margin="3rem 0">
-          {notes.map(
-            (note: { id: string; name: string; description: string }) => (
-              <Flex
-                key={note.id || note.name}
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Text as="strong" fontWeight={700}>
-                  {note.name}
-                </Text>
-                <Text as="span">{note.description}</Text>
-                <Button variation="link" onClick={() => deleteNote(note)}>
-                  Delete note
-                </Button>
-              </Flex>
-            )
-          )}
+          {notes.map((note: Note) => (
+            <Flex
+              key={note.id || note.name}
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text as="strong" fontWeight={700}>
+                {note.name}
+              </Text>
+              <Text as="span">{note.description}</Text>
+              <Button variation="link" onClick={() => deleteNote(note)}>
+                Delete note
+              </Button>
+            </Flex>
+          ))}
         </View>
         <Button onClick={signOut}>Sign Out</Button>
       </View>
     </div>
   );
-}
+};
+
 export default withAuthenticator(App);

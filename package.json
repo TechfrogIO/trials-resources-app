@@ -5,7 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
+    "test": "eslint && tsc --noEmit && jest",
     "watch": "jest --watch --collectCoverage=false"
   },
   "dependencies": {
