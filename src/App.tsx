@@ -1,4 +1,3 @@
-import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import {
   withAuthenticator,
@@ -10,70 +9,54 @@ import {
   TextField,
 } from "@aws-amplify/ui-react";
 import React, { useEffect, useState } from "react";
-import { API } from "aws-amplify";
-import { listNotes } from "./graphql/queries";
-import {
-  createNote as createNoteMutation,
-  deleteNote as deleteNoteMutation,
-} from "./graphql/mutations";
+import { Footer } from "./components/Footer";
+import { COMPANY, START_DATE } from "./constants/app";
+import { createNote, deleteNote, fetchNotes } from "./api/api";
+import styled from "@emotion/styled";
 
 interface AppProps {
   signOut?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-interface Note {
+export interface Note {
   id: string;
   name: string;
   description: string;
 }
 
+const AppContainer = styled.div({
+  textAlign: "center",
+});
+
+const AppHeader = styled.header({
+  backgroundColor: "#282c34",
+  minHeight: "60vh",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "1.5rem",
+  color: "white",
+});
+
 const App = ({ signOut }: AppProps) => {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState([] as Note[]);
 
   useEffect(() => {
-    fetchNotes();
+    fetchNotes({ setNotes });
   }, []);
 
-  async function fetchNotes() {
-    const apiData = await API.graphql({ query: listNotes });
-    const notesFromAPI = (apiData as any).data.listNotes.items;
-    setNotes(notesFromAPI);
-  }
-
-  async function createNote(event: any) {
-    event.preventDefault();
-    const form = new FormData(event.target);
-    const data = {
-      name: form.get("name"),
-      description: form.get("description"),
-    };
-    await API.graphql({
-      query: createNoteMutation,
-      variables: { input: data },
-    });
-    fetchNotes();
-    event.target.reset();
-  }
-
-  async function deleteNote({ id }: { id: any }) {
-    const newNotes = notes.filter((note: { id: any }) => note.id !== id);
-    setNotes(newNotes);
-    await API.graphql({
-      query: deleteNoteMutation,
-      variables: { input: { id } },
-    });
-  }
-
   return (
-    <div className="App">
-      <header className="App-header">
+    <AppContainer>
+      <Button onClick={signOut}>Sign Out</Button>
+      <AppHeader>
         <h1>Bike Trials Resources</h1>
         <p>Lots of hopping up, across, and down on bikes.</p>
         <p>And occassionally crashing.</p>
-      </header>
-      <View className="App">
+      </AppHeader>
+      <View>
         <Heading level={1}>My Notes App</Heading>
-        <View as="form" margin="3rem 0" onSubmit={createNote}>
+        <View as="form" margin="3rem 0" onSubmit={createNote({ setNotes })}>
           <Flex direction="row" justifyContent="center">
             <TextField
               name="name"
@@ -109,15 +92,18 @@ const App = ({ signOut }: AppProps) => {
                 {note.name}
               </Text>
               <Text as="span">{note.description}</Text>
-              <Button variation="link" onClick={() => deleteNote(note)}>
+              <Button
+                variation="link"
+                onClick={() => deleteNote({ notes, setNotes, id: note.id })}
+              >
                 Delete note
               </Button>
             </Flex>
           ))}
         </View>
-        <Button onClick={signOut}>Sign Out</Button>
+        <Footer company={COMPANY} startDate={START_DATE} />
       </View>
-    </div>
+    </AppContainer>
   );
 };
 
