@@ -10,12 +10,15 @@ export interface FooterProps {
 const FooterText = styled.div({
   display: "flex",
   justifyContent: "center",
+  width: "100%",
+  backgroundColor: "#282c34",
   fontSize: ".8rem",
-  color: "darkgray",
+  color: "#fff",
+  paddingBlock: "2rem 3rem",
 });
 
 export const Footer = ({ company, startDate, endDate }: FooterProps) => {
-  const copyrightText = `&copy;&nbsp;${startDate}${
+  const copyrightText = `© ${startDate}${
     endDate ? `-${endDate}` : ""
   } ${company}. All rights reserved.`;
 

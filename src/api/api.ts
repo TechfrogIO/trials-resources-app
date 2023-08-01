@@ -4,7 +4,7 @@ import {
   deleteNote as deleteNoteMutation,
 } from "../graphql/mutations";
 import { listNotes } from "../graphql/queries";
-import { Note } from "../App";
+import { Note } from "../pages/EditorPage";
 
 interface ApiProps {
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
@@ -21,20 +21,22 @@ export const fetchNotes = async ({ setNotes }: ApiProps) => {
   setNotes(notesFromAPI);
 };
 
-export const createNote = ({setNotes}: ApiProps) => async (event: any) => {
-  event.preventDefault();
-  const form = new FormData(event.target);
-  const data = {
-    name: form.get("name"),
-    description: form.get("description"),
+export const createNote =
+  ({ setNotes }: ApiProps) =>
+  async (event: any) => {
+    event.preventDefault();
+    const form = new FormData(event.target);
+    const data = {
+      name: form.get("name"),
+      description: form.get("description"),
+    };
+    await API.graphql({
+      query: createNoteMutation,
+      variables: { input: data },
+    });
+    fetchNotes({ setNotes });
+    event.target.reset();
   };
-  await API.graphql({
-    query: createNoteMutation,
-    variables: { input: data },
-  });
-  fetchNotes({ setNotes });
-  event.target.reset();
-};
 
 export const deleteNote = async ({ notes, setNotes, id }: DeleteProps) => {
   const newNotes = notes.filter((note: { id: any }) => note.id !== id);

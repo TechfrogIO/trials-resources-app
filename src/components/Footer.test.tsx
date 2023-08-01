@@ -12,8 +12,15 @@ describe("Footer", () => {
     };
   });
 
-  it("renders", () => {
-    const expectedText = `&copy;&nbsp;${props.startDate} ${props.company}. All rights reserved.`;
+  it("renders without end date", () => {
+    const expectedText = `© ${props.startDate} ${props.company}. All rights reserved.`;
+    render(<Footer {...props} />);
+    expect(screen.getAllByText(expectedText)).toHaveLength(1);
+  });
+
+  it("renders with end date", () => {
+    props.endDate = "2024";
+    const expectedText = `© ${props.startDate}-${props.endDate} ${props.company}. All rights reserved.`;
     render(<Footer {...props} />);
     expect(screen.getAllByText(expectedText)).toHaveLength(1);
   });
