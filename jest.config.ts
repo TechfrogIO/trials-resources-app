@@ -10,6 +10,10 @@ const config: Config = {
       statements: -20,
     },
   },
+  moduleNameMapper: {
+    "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.ts",
+    "^uuid$": require.resolve("uuid"),
+  },
   testEnvironment: "jsdom",
   transform: {
     "^.+\\.(ts|tsx|js|jsx)$": "ts-jest",
